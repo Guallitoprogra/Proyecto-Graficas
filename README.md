@@ -13,10 +13,9 @@ zig build run
 ## Controles planeados
 
 - `W` y `S` para avanzar y retroceder.
-- `A` y `D` para moverse lateralmente.
-- Mouse para girar la camara.
+- `A` y `D` para girar la camara.
 - `Esc` para cerrar el programa.
 
 ## Estado
 
-Primer avance del proyecto. Ya hay una ventana, framebuffer y una vista previa del mapa que se usara para el ray caster.
+Segundo avance del proyecto. Ya hay ray casting, movimiento del jugador, colisiones contra paredes y FPS en pantalla.
