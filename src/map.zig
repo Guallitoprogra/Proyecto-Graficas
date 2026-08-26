@@ -38,6 +38,13 @@ pub fn isWall(x: i32, y: i32) bool {
     return tiles[@intCast(y)][@intCast(x)] != 0;
 }
 
+pub fn tileAt(x: i32, y: i32) u8 {
+    if (x < 0 or y < 0) return 1;
+    if (x >= width or y >= height) return 1;
+
+    return tiles[@intCast(y)][@intCast(x)];
+}
+
 pub fn drawPreview(buffer: *fb.Framebuffer, player: player_file.Player) void {
     const cell = 12;
     const start_x = 18;
