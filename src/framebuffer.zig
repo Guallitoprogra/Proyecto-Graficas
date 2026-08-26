@@ -39,6 +39,42 @@ pub const Framebuffer = struct {
         self.pixels[uy * screen_width + ux] = color;
     }
 
+    pub fn rect(self: *Framebuffer, x: i32, y: i32, w: i32, h: i32, color: Color) void {
+        var py: i32 = 0;
+        while (py < h) : (py += 1) {
+            var px: i32 = 0;
+            while (px < w) : (px += 1) {
+                self.point(x + px, y + py, color);
+            }
+        }
+    }
+
+    pub fn line(self: *Framebuffer, x0_start: i32, y0_start: i32, x1: i32, y1: i32, color: Color) void {
+        var x0 = x0_start;
+        var y0 = y0_start;
+
+        const dx: i32 = @intCast(@abs(x1 - x0));
+        const dy: i32 = -@as(i32, @intCast(@abs(y1 - y0)));
+        const step_x: i32 = if (x0 < x1) 1 else -1;
+        const step_y: i32 = if (y0 < y1) 1 else -1;
+        var err = dx + dy;
+
+        while (true) {
+            self.point(x0, y0, color);
+            if (x0 == x1 and y0 == y1) break;
+
+            const err2 = err * 2;
+            if (err2 >= dy) {
+                err += dy;
+                x0 += step_x;
+            }
+            if (err2 <= dx) {
+                err += dx;
+                y0 += step_y;
+            }
+        }
+    }
+
     pub fn drawBackground(self: *Framebuffer) void {
         var y: i32 = 0;
         while (y < screen_height) : (y += 1) {

@@ -19,4 +19,4 @@ zig build run
 
 ## Estado
 
-Primer avance del proyecto. Todavia se esta armando la base del render.
+Primer avance del proyecto. Ya hay una ventana, framebuffer y una vista previa del mapa que se usara para el ray caster.

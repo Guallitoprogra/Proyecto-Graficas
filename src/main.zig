@@ -1,4 +1,5 @@
 const fb = @import("framebuffer.zig");
+const map = @import("map.zig");
 const win = @import("window.zig");
 
 pub fn main() !void {
@@ -8,6 +9,7 @@ pub fn main() !void {
     while (window.isOpen()) {
         framebuffer.drawBackground();
         drawCenterLine(&framebuffer);
+        map.drawPreview(&framebuffer);
 
         window.draw(&framebuffer);
         win.waitMilliseconds(16);
