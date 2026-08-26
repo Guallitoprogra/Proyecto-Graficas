@@ -1,4 +1,5 @@
 const fb = @import("framebuffer.zig");
+const player_file = @import("player.zig");
 
 pub const width = 16;
 pub const height = 12;
@@ -37,7 +38,7 @@ pub fn isWall(x: i32, y: i32) bool {
     return tiles[@intCast(y)][@intCast(x)] != 0;
 }
 
-pub fn drawPreview(buffer: *fb.Framebuffer) void {
+pub fn drawPreview(buffer: *fb.Framebuffer, player: player_file.Player) void {
     const cell = 12;
     const start_x = 18;
     const start_y = 22;
@@ -52,6 +53,14 @@ pub fn drawPreview(buffer: *fb.Framebuffer) void {
         }
     }
 
-    buffer.rect(start_x + 2 * cell + 3, start_y + 2 * cell + 3, 6, 6, fb.colors.white);
-    buffer.line(start_x + 2 * cell + 6, start_y + 2 * cell + 6, start_x + 4 * cell, start_y + 2 * cell, fb.colors.white);
+    const px: i32 = start_x + @as(i32, @intFromFloat(player.x * cell));
+    const py: i32 = start_y + @as(i32, @intFromFloat(player.y * cell));
+    buffer.rect(px - 2, py - 2, 5, 5, fb.colors.white);
+    buffer.line(
+        px,
+        py,
+        px + @as(i32, @intFromFloat(@cos(player.angle) * 14.0)),
+        py + @as(i32, @intFromFloat(@sin(player.angle) * 14.0)),
+        fb.colors.white,
+    );
 }

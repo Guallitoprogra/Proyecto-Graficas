@@ -89,6 +89,10 @@ pub fn waitMilliseconds(ms: u32) void {
     Sleep(ms);
 }
 
+pub fn isKeyDown(key: i32) bool {
+    return GetAsyncKeyState(key) < 0;
+}
+
 fn makeBitmapInfo() BITMAPINFO {
     return .{
         .bmiHeader = .{
@@ -216,6 +220,7 @@ const SRCCOPY = 0x00CC0020;
 
 extern "kernel32" fn GetModuleHandleA(lpModuleName: ?LPCSTR) callconv(.winapi) HINSTANCE;
 extern "kernel32" fn Sleep(dwMilliseconds: DWORD) callconv(.winapi) void;
+extern "user32" fn GetAsyncKeyState(vKey: i32) callconv(.winapi) i16;
 extern "user32" fn RegisterClassA(lpWndClass: *const WNDCLASSA) callconv(.winapi) ATOM;
 extern "user32" fn CreateWindowExA(dwExStyle: DWORD, lpClassName: LPCSTR, lpWindowName: LPCSTR, dwStyle: DWORD, x: i32, y: i32, nWidth: i32, nHeight: i32, hWndParent: HWND, hMenu: HMENU, hInstance: HINSTANCE, lpParam: ?*anyopaque) callconv(.winapi) HWND;
 extern "user32" fn ShowWindow(hWnd: HWND, nCmdShow: i32) callconv(.winapi) BOOL;
