@@ -5,7 +5,7 @@ pub const width = 16;
 pub const height = 12;
 
 // 0 es espacio libre. Los otros numeros son paredes con colores distintos.
-pub const tiles = [height][width]u8{
+const level1 = [height][width]u8{
     .{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
     .{ 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2, 1 },
     .{ 1, 0, 2, 2, 0, 0, 3, 0, 0, 4, 4, 4, 0, 0, 0, 1 },
@@ -20,6 +20,33 @@ pub const tiles = [height][width]u8{
     .{ 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1 },
 };
 
+const level2 = [height][width]u8{
+    .{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
+    .{ 2, 0, 0, 0, 0, 0, 4, 0, 0, 0, 0, 0, 5, 0, 0, 2 },
+    .{ 2, 0, 3, 3, 3, 0, 4, 0, 1, 1, 1, 0, 5, 0, 0, 2 },
+    .{ 2, 0, 3, 0, 0, 0, 4, 0, 1, 0, 0, 0, 5, 5, 0, 2 },
+    .{ 2, 0, 0, 0, 5, 5, 0, 0, 0, 0, 4, 0, 0, 0, 0, 2 },
+    .{ 2, 4, 4, 0, 5, 0, 0, 3, 3, 0, 4, 0, 1, 1, 0, 2 },
+    .{ 2, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, 0, 1, 0, 0, 2 },
+    .{ 2, 0, 1, 1, 1, 0, 4, 4, 4, 0, 5, 0, 0, 0, 3, 2 },
+    .{ 2, 0, 0, 0, 1, 0, 0, 0, 4, 0, 5, 5, 5, 0, 3, 2 },
+    .{ 2, 0, 5, 0, 0, 0, 3, 0, 0, 0, 0, 0, 0, 0, 0, 2 },
+    .{ 2, 0, 5, 5, 5, 0, 3, 3, 3, 0, 1, 1, 1, 0, 0, 2 },
+    .{ 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2, 2 },
+};
+
+pub const Level = struct {
+    tiles: [height][width]u8,
+    start_x: f32,
+    start_y: f32,
+    start_angle: f32,
+};
+
+pub const levels = [_]Level{
+    .{ .tiles = level1, .start_x = 2.5, .start_y = 2.5, .start_angle = 0.0 },
+    .{ .tiles = level2, .start_x = 13.5, .start_y = 9.5, .start_angle = 3.14 },
+};
+
 pub fn wallColor(tile: u8) fb.Color {
     return switch (tile) {
         1 => .{ .r = 180, .g = 68, .b = 68, .a = 255 },
@@ -31,30 +58,32 @@ pub fn wallColor(tile: u8) fb.Color {
     };
 }
 
-pub fn isWall(x: i32, y: i32) bool {
+pub fn isWall(level_index: usize, x: i32, y: i32) bool {
     if (x < 0 or y < 0) return true;
     if (x >= width or y >= height) return true;
 
-    return tiles[@intCast(y)][@intCast(x)] != 0;
+    return levels[level_index].tiles[@intCast(y)][@intCast(x)] != 0;
 }
 
-pub fn tileAt(x: i32, y: i32) u8 {
+pub fn tileAt(level_index: usize, x: i32, y: i32) u8 {
     if (x < 0 or y < 0) return 1;
     if (x >= width or y >= height) return 1;
 
-    return tiles[@intCast(y)][@intCast(x)];
+    return levels[level_index].tiles[@intCast(y)][@intCast(x)];
 }
 
-pub fn drawPreview(buffer: *fb.Framebuffer, player: player_file.Player) void {
-    const cell = 12;
-    const start_x = 18;
-    const start_y = 22;
+pub fn drawMinimap(buffer: *fb.Framebuffer, level_index: usize, player: player_file.Player) void {
+    const cell = 5;
+    const start_x = 8;
+    const start_y = 8;
+
+    buffer.rect(start_x - 3, start_y - 3, width * cell + 6, height * cell + 6, fb.colors.black);
 
     var y: i32 = 0;
     while (y < height) : (y += 1) {
         var x: i32 = 0;
         while (x < width) : (x += 1) {
-            const tile = tiles[@intCast(y)][@intCast(x)];
+            const tile = levels[level_index].tiles[@intCast(y)][@intCast(x)];
             const color = if (tile == 0) fb.colors.floor else wallColor(tile);
             buffer.rect(start_x + x * cell, start_y + y * cell, cell - 1, cell - 1, color);
         }

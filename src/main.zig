@@ -9,16 +9,26 @@ pub fn main() !void {
     var framebuffer = fb.Framebuffer.init();
     var window = try win.Window.open("Proyecto Graficas - Ray Caster");
     var player = player_file.Player{};
+    var level_index: usize = 0;
     var last_second = win.nowMilliseconds();
     var frames_this_second: u32 = 0;
     var fps: u32 = 0;
 
     while (window.isOpen()) {
         if (win.isKeyDown(0x1B)) break;
-        player.update();
+        if (win.isKeyDown('1')) {
+            level_index = 0;
+            player.setLevelStart(level_index);
+        }
+        if (win.isKeyDown('2')) {
+            level_index = 1;
+            player.setLevelStart(level_index);
+        }
 
-        raycaster.render(&framebuffer, player);
-        map.drawPreview(&framebuffer, player);
+        player.update(level_index);
+
+        raycaster.render(&framebuffer, level_index, player);
+        map.drawMinimap(&framebuffer, level_index, player);
         hud.drawFps(&framebuffer, fps);
 
         window.draw(&framebuffer);

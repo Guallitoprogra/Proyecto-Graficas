@@ -4,7 +4,7 @@ const player_file = @import("player.zig");
 
 const fov: f32 = 1.0471976; // 60 grados.
 
-pub fn render(buffer: *fb.Framebuffer, player: player_file.Player) void {
+pub fn render(buffer: *fb.Framebuffer, level_index: usize, player: player_file.Player) void {
     buffer.drawBackground();
 
     var column: i32 = 0;
@@ -12,7 +12,7 @@ pub fn render(buffer: *fb.Framebuffer, player: player_file.Player) void {
         const percent = @as(f32, @floatFromInt(column)) / @as(f32, @floatFromInt(fb.screen_width));
         const ray_angle = player.angle - fov / 2.0 + percent * fov;
 
-        const hit = castRay(player.x, player.y, ray_angle);
+        const hit = castRay(level_index, player.x, player.y, ray_angle);
         const corrected = hit.distance * @cos(ray_angle - player.angle);
         const wall_height = @as(i32, @intFromFloat(@as(f32, @floatFromInt(fb.screen_height)) / corrected));
 
@@ -24,7 +24,7 @@ pub fn render(buffer: *fb.Framebuffer, player: player_file.Player) void {
     }
 }
 
-fn castRay(start_x: f32, start_y: f32, angle: f32) RayHit {
+fn castRay(level_index: usize, start_x: f32, start_y: f32, angle: f32) RayHit {
     const ray_dx = @cos(angle);
     const ray_dy = @sin(angle);
 
@@ -35,7 +35,7 @@ fn castRay(start_x: f32, start_y: f32, angle: f32) RayHit {
 
         const tile_x: i32 = @intFromFloat(@floor(test_x));
         const tile_y: i32 = @intFromFloat(@floor(test_y));
-        const tile = map.tileAt(tile_x, tile_y);
+        const tile = map.tileAt(level_index, tile_x, tile_y);
 
         if (tile != 0) {
             return .{
