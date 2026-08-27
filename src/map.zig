@@ -58,6 +58,15 @@ pub fn wallColor(tile: u8) fb.Color {
     };
 }
 
+pub fn exitTile(level_index: usize) [2]i32 {
+    return if (level_index == 0) .{ 14, 10 } else .{ 1, 1 };
+}
+
+pub fn isAtExit(level_index: usize, x: f32, y: f32) bool {
+    const exit = exitTile(level_index);
+    return @as(i32, @intFromFloat(@floor(x))) == exit[0] and @as(i32, @intFromFloat(@floor(y))) == exit[1];
+}
+
 pub fn isWall(level_index: usize, x: i32, y: i32) bool {
     if (x < 0 or y < 0) return true;
     if (x >= width or y >= height) return true;
@@ -88,6 +97,9 @@ pub fn drawMinimap(buffer: *fb.Framebuffer, level_index: usize, player: player_f
             buffer.rect(start_x + x * cell, start_y + y * cell, cell - 1, cell - 1, color);
         }
     }
+
+    const exit = exitTile(level_index);
+    buffer.rect(start_x + exit[0] * cell + 1, start_y + exit[1] * cell + 1, cell - 2, cell - 2, .{ .r = 90, .g = 245, .b = 180, .a = 255 });
 
     const px: i32 = start_x + @as(i32, @intFromFloat(player.x * cell));
     const py: i32 = start_y + @as(i32, @intFromFloat(player.y * cell));

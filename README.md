@@ -15,6 +15,7 @@ zig build run
 - `W` y `S` para avanzar y retroceder.
 - `A` y `D` para girar la camara.
 - `1` y `2` para cambiar de nivel.
+- `Enter` para iniciar o reiniciar despues de ganar.
 - `Esc` para cerrar el programa.
 
 ## Estado
