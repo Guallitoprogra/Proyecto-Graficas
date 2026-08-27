@@ -2,8 +2,8 @@ const win = @import("window.zig");
 const map = @import("map.zig");
 
 pub const Player = struct {
-    x: f32 = 2.5,
-    y: f32 = 2.5,
+    x: f32 = 1.5,
+    y: f32 = 1.5,
     angle: f32 = 0.0,
 
     pub fn setLevelStart(self: *Player, level_index: usize) void {

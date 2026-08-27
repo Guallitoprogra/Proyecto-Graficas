@@ -43,7 +43,7 @@ pub const Level = struct {
 };
 
 pub const levels = [_]Level{
-    .{ .tiles = level1, .start_x = 2.5, .start_y = 2.5, .start_angle = 0.0 },
+    .{ .tiles = level1, .start_x = 1.5, .start_y = 1.5, .start_angle = 0.0 },
     .{ .tiles = level2, .start_x = 13.5, .start_y = 9.5, .start_angle = 3.14 },
 };
 
