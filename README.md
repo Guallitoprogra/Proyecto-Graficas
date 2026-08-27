@@ -19,12 +19,14 @@ zig build run
 - `W` y `S` para avanzar y retroceder.
 - `A` y `D` para girar la camara.
 - `1` y `2` para cambiar de nivel.
-- `Enter` para iniciar o reiniciar despues de ganar.
+- `Enter` para iniciar o pasar al siguiente nivel despues de ganar.
 - `Esc` para cerrar el programa.
 
 ## Estado
 
 Version final del proyecto. Ya hay ray casting, movimiento del jugador, colisiones contra paredes, FPS en pantalla, minimapa, dos niveles, pantalla de inicio, pantalla de exito y un sprite animado.
+
+Despues de llegar a la salida aparece una pantalla de felicidades con el tiempo que tomo completar el nivel.
 
 ## Archivos importantes
 

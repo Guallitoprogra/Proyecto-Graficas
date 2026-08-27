@@ -21,6 +21,8 @@ pub fn main() !void {
     var frames_this_second: u32 = 0;
     var fps: u32 = 0;
     var mode = Mode.welcome;
+    var level_start_time = win.nowMilliseconds();
+    var last_finish_seconds: u32 = 0;
 
     while (window.isOpen()) {
         if (win.isKeyDown(0x1B)) break;
@@ -29,17 +31,23 @@ pub fn main() !void {
         if (mode == .welcome) {
             drawWelcome(&framebuffer);
             window.draw(&framebuffer);
-            if (win.isKeyDown(0x0D)) mode = .playing;
+            if (win.isKeyDown(0x0D)) {
+                player.setLevelStart(level_index);
+                level_start_time = win.nowMilliseconds();
+                mode = .playing;
+            }
             win.waitMilliseconds(16);
             continue;
         }
 
         if (mode == .success) {
-            drawSuccess(&framebuffer);
+            drawSuccess(&framebuffer, last_finish_seconds);
             window.draw(&framebuffer);
             if (win.isKeyDown(0x0D)) {
+                level_index = (level_index + 1) % map.levels.len;
                 mode = .playing;
                 player.setLevelStart(level_index);
+                level_start_time = win.nowMilliseconds();
             }
             win.waitMilliseconds(16);
             continue;
@@ -48,10 +56,12 @@ pub fn main() !void {
         if (win.isKeyDown('1')) {
             level_index = 0;
             player.setLevelStart(level_index);
+            level_start_time = now;
         }
         if (win.isKeyDown('2')) {
             level_index = 1;
             player.setLevelStart(level_index);
+            level_start_time = now;
         }
 
         player.update(level_index);
@@ -65,6 +75,7 @@ pub fn main() !void {
         frames_this_second += 1;
 
         if (map.isAtExit(level_index, player.x, player.y)) {
+            last_finish_seconds = @intCast((now - level_start_time) / 1000);
             mode = .success;
         }
 
@@ -79,15 +90,24 @@ pub fn main() !void {
 }
 
 fn drawWelcome(framebuffer: *fb.Framebuffer) void {
-    framebuffer.clear(.{ .r = 16, .g = 18, .b = 28, .a = 255 });
-    framebuffer.rect(38, 44, 244, 100, .{ .r = 34, .g = 42, .b = 58, .a = 255 });
-    hud.drawMessage(framebuffer, 78, 70, "RAY CASTER", fb.colors.white);
-    hud.drawMessage(framebuffer, 58, 104, "ENTER PARA JUGAR", .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+    framebuffer.clear(.{ .r = 12, .g = 18, .b = 31, .a = 255 });
+    framebuffer.rect(0, 118, fb.screen_width, 82, .{ .r = 42, .g = 38, .b = 35, .a = 255 });
+    framebuffer.rect(24, 32, 272, 118, .{ .r = 30, .g = 39, .b = 58, .a = 255 });
+    framebuffer.rect(28, 36, 264, 110, .{ .r = 50, .g = 65, .b = 91, .a = 255 });
+
+    hud.drawBigMessage(framebuffer, 68, 56, "RAYCASTER", fb.colors.white);
+    hud.drawMessage(framebuffer, 74, 102, "ENTER PARA JUGAR", .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+    hud.drawMessage(framebuffer, 74, 124, "WASD MOVER  1 2 NIVEL", fb.colors.white);
 }
 
-fn drawSuccess(framebuffer: *fb.Framebuffer) void {
-    framebuffer.clear(.{ .r = 14, .g = 50, .b = 42, .a = 255 });
-    framebuffer.rect(44, 54, 232, 88, .{ .r = 30, .g = 88, .b = 72, .a = 255 });
-    hud.drawMessage(framebuffer, 78, 78, "NIVEL LISTO", fb.colors.white);
-    hud.drawMessage(framebuffer, 60, 112, "ENTER REINICIA", .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+fn drawSuccess(framebuffer: *fb.Framebuffer, seconds: u32) void {
+    framebuffer.clear(.{ .r = 12, .g = 49, .b = 43, .a = 255 });
+    framebuffer.rect(30, 38, 260, 124, .{ .r = 25, .g = 92, .b = 77, .a = 255 });
+    framebuffer.rect(36, 44, 248, 112, .{ .r = 40, .g = 126, .b = 99, .a = 255 });
+
+    hud.drawBigMessage(framebuffer, 54, 62, "FELICIDADES", fb.colors.white);
+    hud.drawMessage(framebuffer, 82, 106, "TIEMPO:", .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+    hud.drawSmallNumber(framebuffer, 138, 106, seconds, .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+    hud.drawMessage(framebuffer, 170, 106, "SEG", .{ .r = 245, .g = 218, .b = 110, .a = 255 });
+    hud.drawMessage(framebuffer, 58, 132, "ENTER SIGUIENTE NIVEL", fb.colors.white);
 }
