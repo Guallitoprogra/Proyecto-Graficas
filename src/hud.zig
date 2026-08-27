@@ -1,6 +1,7 @@
 const fb = @import("framebuffer.zig");
 
 pub fn drawFps(buffer: *fb.Framebuffer, fps: u32) void {
+    // El texto tambien se dibuja con pixeles; no depende de fuentes del sistema.
     drawText(buffer, 232, 8, "FPS", fb.colors.white);
     drawNumber(buffer, 258, 8, fps, fb.colors.white);
 }
@@ -115,6 +116,7 @@ fn drawPattern(buffer: *fb.Framebuffer, x: i32, y: i32, pattern: []const u8, col
 }
 
 fn drawPatternScaled(buffer: *fb.Framebuffer, x: i32, y: i32, pattern: []const u8, color: fb.Color, scale: i32) void {
+    // Cada letra es una matriz de 3x5 bits que se escala con rectangulos.
     for (pattern, 0..) |row, py| {
         var px: i32 = 0;
         while (px < 3) : (px += 1) {

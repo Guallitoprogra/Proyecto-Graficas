@@ -31,6 +31,7 @@ pub const Framebuffer = struct {
     }
 
     pub fn point(self: *Framebuffer, x: i32, y: i32, color: Color) void {
+        // Esta es la funcion base del proyecto: todo termina pintandose pixel por pixel.
         if (x < 0 or y < 0) return;
         if (x >= screen_width or y >= screen_height) return;
 
@@ -40,6 +41,7 @@ pub const Framebuffer = struct {
     }
 
     pub fn rect(self: *Framebuffer, x: i32, y: i32, w: i32, h: i32, color: Color) void {
+        // Rect se usa para HUD, minimapa y pantallas; internamente solo llama a point.
         var py: i32 = 0;
         while (py < h) : (py += 1) {
             var px: i32 = 0;
@@ -50,6 +52,7 @@ pub const Framebuffer = struct {
     }
 
     pub fn line(self: *Framebuffer, x0_start: i32, y0_start: i32, x1: i32, y1: i32, color: Color) void {
+        // Algoritmo de Bresenham para dibujar lineas sin usar librerias externas.
         var x0 = x0_start;
         var y0 = y0_start;
 
@@ -76,6 +79,7 @@ pub const Framebuffer = struct {
     }
 
     pub fn drawBackground(self: *Framebuffer) void {
+        // Se pinta primero el fondo: mitad cielo y mitad piso, como en un juego tipo Doom.
         var y: i32 = 0;
         while (y < screen_height) : (y += 1) {
             const color = if (y < screen_height / 2) colors.sky else colors.floor;

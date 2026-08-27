@@ -5,6 +5,7 @@ const player_file = @import("player.zig");
 const fov: f32 = 1.0471976; // 60 grados.
 
 pub fn render(buffer: *fb.Framebuffer, level_index: usize, player: player_file.Player) void {
+    // Por cada columna de la pantalla se lanza un rayo y se dibuja una pared vertical.
     buffer.drawBackground();
 
     var column: i32 = 0;
@@ -25,6 +26,7 @@ pub fn render(buffer: *fb.Framebuffer, level_index: usize, player: player_file.P
 }
 
 fn castRay(level_index: usize, start_x: f32, start_y: f32, angle: f32) RayHit {
+    // El rayo avanza poco a poco hasta tocar una celda que sea pared.
     const ray_dx = @cos(angle);
     const ray_dy = @sin(angle);
 
@@ -59,6 +61,7 @@ fn drawWallColumn(buffer: *fb.Framebuffer, x: i32, top: i32, bottom: i32, color:
 }
 
 fn shade(color: fb.Color, distance: f32) fb.Color {
+    // Mientras mas lejos esta una pared, mas oscura se pinta para dar profundidad.
     const light = @max(0.25, 1.0 - distance * 0.08);
 
     return .{

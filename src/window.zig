@@ -5,6 +5,7 @@ pub const Window = struct {
     bitmap_info: BITMAPINFO,
 
     pub fn open(title: [:0]const u8) !Window {
+        // Esta parte crea una ventana normal de Windows usando la API Win32.
         const class_name = "ProyectoGraficasWindow";
         const instance = GetModuleHandleA(null);
 
@@ -48,6 +49,7 @@ pub const Window = struct {
     }
 
     pub fn isOpen(self: *Window) bool {
+        // Aqui se leen los mensajes de Windows para saber si la ventana sigue abierta.
         _ = self;
         var message: MSG = undefined;
         while (PeekMessageA(&message, null, 0, 0, PM_REMOVE) != 0) {
@@ -59,6 +61,7 @@ pub const Window = struct {
     }
 
     pub fn draw(self: *Window, framebuffer: *const fb.Framebuffer) void {
+        // StretchDIBits copia nuestro framebuffer pequeno y lo escala al tamano de la ventana.
         var rect: RECT = undefined;
         if (GetClientRect(self.hwnd, &rect) == 0) return;
 

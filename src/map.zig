@@ -48,6 +48,7 @@ pub const levels = [_]Level{
 };
 
 pub fn wallColor(tile: u8) fb.Color {
+    // Cada numero del mapa se traduce a un color diferente de pared.
     return switch (tile) {
         1 => .{ .r = 180, .g = 68, .b = 68, .a = 255 },
         2 => .{ .r = 70, .g = 138, .b = 201, .a = 255 },
@@ -68,6 +69,7 @@ pub fn isAtExit(level_index: usize, x: f32, y: f32) bool {
 }
 
 pub fn isWall(level_index: usize, x: i32, y: i32) bool {
+    // Todo lo que este fuera del mapa se trata como pared para no salirse del nivel.
     if (x < 0 or y < 0) return true;
     if (x >= width or y >= height) return true;
 
@@ -82,6 +84,7 @@ pub fn tileAt(level_index: usize, x: i32, y: i32) u8 {
 }
 
 pub fn drawMinimap(buffer: *fb.Framebuffer, level_index: usize, player: player_file.Player) void {
+    // El minimapa ayuda a ver donde esta el jugador dentro del mundo 2D.
     const cell = 5;
     const start_x = 8;
     const start_y = 8;

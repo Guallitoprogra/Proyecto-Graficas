@@ -7,6 +7,7 @@ pub const Player = struct {
     angle: f32 = 0.0,
 
     pub fn setLevelStart(self: *Player, level_index: usize) void {
+        // Cada nivel tiene su punto de inicio para evitar aparecer dentro de una pared.
         const level = map.levels[level_index];
         self.x = level.start_x;
         self.y = level.start_y;
@@ -14,6 +15,7 @@ pub const Player = struct {
     }
 
     pub fn update(self: *Player, level_index: usize) void {
+        // El jugador gira con A/D y avanza o retrocede segun hacia donde esta viendo.
         const move_speed: f32 = 0.045;
         const turn_speed: f32 = 0.035;
 

@@ -13,6 +13,7 @@ const Mode = enum {
 };
 
 pub fn main() !void {
+    // Estos son los objetos principales del juego: pantalla, ventana, jugador y estado.
     var framebuffer = fb.Framebuffer.init();
     var window = try win.Window.open("Proyecto Graficas - Ray Caster");
     var player = player_file.Player{};
@@ -28,6 +29,7 @@ pub fn main() !void {
         if (win.isKeyDown(0x1B)) break;
         const now = win.nowMilliseconds();
 
+        // La pantalla de inicio espera Enter antes de empezar el nivel.
         if (mode == .welcome) {
             drawWelcome(&framebuffer);
             window.draw(&framebuffer);
@@ -40,6 +42,7 @@ pub fn main() !void {
             continue;
         }
 
+        // Cuando se gana, se muestra el tiempo y Enter manda al siguiente nivel.
         if (mode == .success) {
             drawSuccess(&framebuffer, last_finish_seconds);
             window.draw(&framebuffer);
@@ -53,6 +56,7 @@ pub fn main() !void {
             continue;
         }
 
+        // Las teclas 1 y 2 cambian de nivel sin tener que recompilar el programa.
         if (win.isKeyDown('1')) {
             level_index = 0;
             player.setLevelStart(level_index);
@@ -66,6 +70,7 @@ pub fn main() !void {
 
         player.update(level_index);
 
+        // Este es el render normal del juego: mundo 3D, sprite, minimapa y FPS.
         raycaster.render(&framebuffer, level_index, player);
         sprite.draw(&framebuffer, player, @intCast(frames_this_second));
         map.drawMinimap(&framebuffer, level_index, player);
@@ -74,11 +79,13 @@ pub fn main() !void {
         window.draw(&framebuffer);
         frames_this_second += 1;
 
+        // La salida del nivel se revisa usando la posicion actual del jugador.
         if (map.isAtExit(level_index, player.x, player.y)) {
             last_finish_seconds = @intCast((now - level_start_time) / 1000);
             mode = .success;
         }
 
+        // Contador simple de FPS: cuenta frames durante un segundo completo.
         if (now - last_second >= 1000) {
             fps = frames_this_second;
             frames_this_second = 0;
@@ -90,6 +97,7 @@ pub fn main() !void {
 }
 
 fn drawWelcome(framebuffer: *fb.Framebuffer) void {
+    // Esta pantalla es solo UI dibujada con rectangulos y texto de pixeles.
     framebuffer.clear(.{ .r = 12, .g = 18, .b = 31, .a = 255 });
     framebuffer.rect(0, 118, fb.screen_width, 82, .{ .r = 42, .g = 38, .b = 35, .a = 255 });
     framebuffer.rect(24, 32, 272, 118, .{ .r = 30, .g = 39, .b = 58, .a = 255 });
@@ -101,6 +109,7 @@ fn drawWelcome(framebuffer: *fb.Framebuffer) void {
 }
 
 fn drawSuccess(framebuffer: *fb.Framebuffer, seconds: u32) void {
+    // Al ganar se muestra el tiempo para que se vea una condicion de exito clara.
     framebuffer.clear(.{ .r = 12, .g = 49, .b = 43, .a = 255 });
     framebuffer.rect(30, 38, 260, 124, .{ .r = 25, .g = 92, .b = 77, .a = 255 });
     framebuffer.rect(36, 44, 248, 112, .{ .r = 40, .g = 126, .b = 99, .a = 255 });

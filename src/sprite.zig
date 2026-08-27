@@ -27,6 +27,7 @@ pub fn draw(buffer: *fb.Framebuffer, player: player_file.Player, frame: u32) voi
 }
 
 fn normalizeAngle(angle_start: f32) f32 {
+    // Mantener el angulo entre -pi y pi hace mas facil saber si el sprite esta al frente.
     var angle = angle_start;
     while (angle > 3.14159) : (angle -= 6.28318) {}
     while (angle < -3.14159) : (angle += 6.28318) {}
